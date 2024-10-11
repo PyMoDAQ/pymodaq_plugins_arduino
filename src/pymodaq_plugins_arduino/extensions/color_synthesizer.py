@@ -3,13 +3,15 @@ from qtpy import QtWidgets
 
 from pyqtgraph.widgets.ColorButton import ColorButton
 
-from pymodaq.utils import gui_utils as gutils
-from pymodaq.utils.config import Config, get_set_preset_path, ConfigError
-from pymodaq.utils.logger import set_logger, get_module_name
+from pymodaq_gui import utils as gutils
+from pymodaq_utils.config import Config, ConfigError
+from pymodaq_utils.logger import set_logger, get_module_name
 
 from pymodaq.utils.managers.modules_manager import ModulesManager
 from pymodaq.control_modules.daq_move import DAQ_Move
-from pymodaq.utils.gui_utils.widgets.lcd import LCD
+from pymodaq_gui.utils.widgets.lcd import LCD
+
+from pymodaq.extensions.utils import CustomExt
 
 # todo: replace here *pymodaq_plugins_template* by your plugin package name
 from pymodaq_plugins_arduino.utils import Config as PluginConfig
@@ -27,7 +29,7 @@ CLASS_NAME = 'ColorSynthesizer'  # this should be the name of your class defined
 
 # todo: modify the name of this class to reflect its application and change the name in the main
 # method at the end of the script
-class ColorSynthesizer(gutils.CustomApp):
+class ColorSynthesizer(CustomExt):
 
     # todo: if you wish to create custom Parameter and corresponding widgets. These will be
     # automatically added as children of self.settings. Morevover, the self.settings_tree will

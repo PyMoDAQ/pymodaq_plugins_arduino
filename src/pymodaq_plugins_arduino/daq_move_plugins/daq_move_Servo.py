@@ -4,8 +4,8 @@ from typing import Optional
 from pymodaq.control_modules.move_utility_classes import (DAQ_Move_base, comon_parameters_fun, main,
                                                           DataActuatorType,
                                                           DataActuator)
-from pymodaq.utils.daq_utils import ThreadCommand
-from pymodaq.utils.parameter import Parameter
+from pymodaq_utils.utils import ThreadCommand
+from pymodaq_gui.parameter import Parameter
 
 from pymodaq_plugins_arduino.hardware.arduino_telemetrix import Arduino
 from pymodaq_plugins_arduino.utils import Config
@@ -26,16 +26,16 @@ class DAQ_Move_Servo(DAQ_Move_base):
          hardware library.
          
     """
-    _controller_units = ''
-    is_multiaxes = True
     _axis_names = {'Servo': config('servo', 'pin')}
-    _epsilon = 1
+    _controller_units = {'Servo': '°'}
+    _epsilons = {'Servo': 1}
+
     data_actuator_type = DataActuatorType['DataActuator']
 
     params = [
                  {'title': 'Ports:', 'name': 'com_port', 'type': 'list',
                   'value': config('com_port'), 'limits': Arduino.COM_PORTS}
-             ] + comon_parameters_fun(is_multiaxes, axis_names=_axis_names, epsilon=_epsilon)
+             ] + comon_parameters_fun(axis_names=_axis_names)
 
     def ini_attributes(self):
         self.controller: Optional[Arduino] = None
