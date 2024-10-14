@@ -1,15 +1,15 @@
 title = "this is the configuration file of the plugin Arduino"
 
-com_port = "COM23"
+com_port = "COM24"
 
 [presets]
 preset_for_colorsynthesizer = "ArduinoLED"
 
 [LED]
 [LED.pins]
-red_pin = 9
-green_pin = 10
-blue_pin = 11
+red_pin = 6
+green_pin = 4
+blue_pin = 5
 
 [LCD]
 address = 0x27
@@ -17,4 +17,6 @@ cols = 16
 rows = 2
 
 [servo]
-pin = 3
+pin = 2
+pos_1 = 55
+pos_2 = 80

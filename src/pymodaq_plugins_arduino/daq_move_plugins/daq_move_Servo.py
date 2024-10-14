@@ -2,10 +2,11 @@ from typing import Optional
 
 
 from pymodaq.control_modules.move_utility_classes import (DAQ_Move_base, comon_parameters_fun, main,
-                                                          DataActuatorType,
+                                                          DataActuatorType, Q_,
                                                           DataActuator)
 from pymodaq_utils.utils import ThreadCommand
 from pymodaq_gui.parameter import Parameter
+
 
 from pymodaq_plugins_arduino.hardware.arduino_telemetrix import Arduino
 from pymodaq_plugins_arduino.utils import Config
@@ -27,7 +28,7 @@ class DAQ_Move_Servo(DAQ_Move_base):
          
     """
     _axis_names = {'Servo': config('servo', 'pin')}
-    _controller_units = {'Servo': '°'}
+    _controller_units = {'Servo': ''}
     _epsilons = {'Servo': 1}
 
     data_actuator_type = DataActuatorType['DataActuator']
@@ -66,7 +67,6 @@ class DAQ_Move_Servo(DAQ_Move_base):
         param: Parameter
             A given parameter (within detector_settings) whose value has been changed by the user
         """
-        ## TODO for your custom plugin
         pass
 
     def ini_stage(self, controller=None):
@@ -93,6 +93,12 @@ class DAQ_Move_Servo(DAQ_Move_base):
                                               )
         self.controller.set_pin_mode_servo(config('servo', 'pin'))
 
+        self.emit_status(ThreadCommand('update_ui', attribute='set_abs_value_red',
+                                       args=[Q_(config('servo', 'pos_1'),
+                                                self.controller_units['Servo'])]))
+        self.emit_status(ThreadCommand('update_ui', attribute='set_abs_value_green',
+                                       args=[Q_(config('servo', 'pos_12'),
+                                                self.controller_units['Servo'])]))
         info = "Whatever info you want to log"
         initialized = True
         return info, initialized
