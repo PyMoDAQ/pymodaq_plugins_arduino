@@ -1,7 +1,6 @@
 import numbers
 from threading import Lock
 
-
 from pyvisa import ResourceManager
 from telemetrix import telemetrix
 
@@ -22,6 +21,12 @@ class Arduino(telemetrix.Telemetrix):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.pin_values_output = {}
+        self.analog_pin_values_input = {0: 0,
+                                        1: 0,
+                                        2: 0,
+                                        3: 0,
+                                        4: 0,
+                                        5: 0}  # Initialized dictionary for 6 analog channels
 
     @staticmethod
     def round_value(value):
@@ -38,6 +43,35 @@ class Arduino(telemetrix.Telemetrix):
         value = self.round_value(value)
         self.analog_write(pin, value)
         self.pin_values_output[pin] = value
+        lock.release()
+
+    def read_analog_pin(self, data):
+        """
+        Used as a callback function to read the value of the analog inputs.
+        Data[0]: pin_type (not used here)
+        Data[1]: pin_number: i.e. 0 is A0 etc.
+        Data[2]: pin_value: an integer between 0 and 1023 (with an Arduino UNO)
+        Data[3]: raw_time_stamp (not used here)
+        :param data: a list in which are loaded the acquisition parameter analog input
+        :return: a dictionary with the following structure {pin_number(int):pin_value(int)}
+        With an arduino up to 6 analog input might be interrogated at the same time
+        """
+        self.analog_pin_values_input[data[1]] = data[2]  # data are integer from 0 to 1023 in case Arduino UNO
+
+    def set_analog_input(self, pin):
+        """
+        Activate the analog pin, make an acquisition, write in the callback, stop the analog reporting
+        :param pin: pin number 1 is A1 etc...
+        :return: acquisition parameters in the declared callback
+        The differential parameter:
+            When comparing the previous value and the current value, if the
+            difference exceeds the differential. This value needs to be equaled
+            or exceeded for a callback report to be generated.
+        """
+        lock.acquire()
+        self.set_pin_mode_analog_input(pin, differential=0, callback=self.read_analog_pin)
+        self.set_analog_scan_interval(1)
+        self.disable_analog_reporting(pin)
         lock.release()
 
     def get_output_pin_value(self, pin: int) -> numbers.Number:
@@ -65,7 +99,7 @@ class Arduino(telemetrix.Telemetrix):
 
 if __name__ == '__main__':
     import time
-    tele = Arduino('COM23')
+    tele = Arduino('COM6')
     tele.set_pin_mode_servo(5, 100, 3000)
     time.sleep(.2)
 

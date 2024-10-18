@@ -27,6 +27,7 @@ Authors
 =======
 
 * Sebastien J. Weber  (sebastien.weber@cemes.fr)
+* Jérémie Margueritat
 
 
 Instruments
@@ -41,6 +42,7 @@ Actuators
   Allows the control of the three color channel independently
 * **LEDwithLCD**: same as **LED** actuator but displaying the red, green, blue values on a standard 16x2 liquid crystal
   display
+* **Analog**: data acquisition from analog inputs
 
 Extensions
 ==========
@@ -67,3 +69,10 @@ on the arduino board. It then uses the telemetrix I2C communication protocol to 
 I2C backpack. The functionalities used to drive the LCD are adapted from a micropython code
 (https://github.com/brainelectronics/micropython-i2c-lcd) itself adapted from
 https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library
+
+Analog 0D viewer
+++++++++++++++++
+
+The **Analog** 0D viewer uses the telemetrix library. The corresponding sketch should therefore be uploaded
+on the arduino board. This allows to acquire data from the analog inputs on an Arduino board from python objects on the connected
+computer. See https://mryslab.github.io/telemetrix/
