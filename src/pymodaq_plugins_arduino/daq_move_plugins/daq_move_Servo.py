@@ -95,10 +95,10 @@ class DAQ_Move_Servo(DAQ_Move_base):
 
         self.emit_status(ThreadCommand('update_ui', attribute='set_abs_value_red',
                                        args=[Q_(config('servo', 'pos_1'),
-                                                self.controller_units['Servo'])]))
+                                                self.axis_unit)]))
         self.emit_status(ThreadCommand('update_ui', attribute='set_abs_value_green',
-                                       args=[Q_(config('servo', 'pos_12'),
-                                                self.controller_units['Servo'])]))
+                                       args=[Q_(config('servo', 'pos_2'),
+                                                self.axis_unit)]))
         info = "Whatever info you want to log"
         initialized = True
         return info, initialized
