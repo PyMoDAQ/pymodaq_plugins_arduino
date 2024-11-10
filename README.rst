@@ -27,19 +27,7 @@ Authors
 =======
 
 * Sebastien J. Weber  (sebastien.weber@cemes.fr)
-
-
-.. if needed use this field
-
-    Contributors
-    ============
-
-    * First Contributor
-    * Other Contributors
-
-.. if needed use this field
-
-  Depending on the plugin type, delete/complete the fields below
+* Jérémie Margueritat
 
 
 Instruments
@@ -54,34 +42,15 @@ Actuators
   Allows the control of the three color channel independently
 * **LEDwithLCD**: same as **LED** actuator but displaying the red, green, blue values on a standard 16x2 liquid crystal
   display
-
-.. if needed use this field
-
-    Viewer0D
-    ++++++++
-
-    * **yyy**: control of yyy 0D detector
-    * **xxx**: control of xxx 0D detector
-
-    Viewer1D
-    ++++++++
-
-    * **yyy**: control of yyy 1D detector
-    * **xxx**: control of xxx 1D detector
+* **Analog**: data acquisition from analog inputs
 
 
-    Viewer2D
-    ++++++++
 
-    * **yyy**: control of yyy 2D detector
-    * **xxx**: control of xxx 2D detector
+Extensions
+==========
 
-
-    PID Models
-    ==========
-
-    Extensions
-    ==========
+* **ColorSynthesizer**: DashBoard extension using RBG LED actuators. Allows to quicly select a RGB value and apply those
+  to the actuators
 
 
 Installation instructions
@@ -105,3 +74,11 @@ on the arduino board. It then uses the telemetrix I2C communication protocol to 
 I2C backpack. The functionalities used to drive the LCD are adapted from a micropython code
 (https://github.com/brainelectronics/micropython-i2c-lcd) itself adapted from
 https://github.com/fdebrabander/Arduino-LiquidCrystal-I2C-library
+
+Analog 0D viewer
+++++++++++++++++
+
+The **Analog** 0D viewer uses the telemetrix library. The corresponding sketch should therefore be uploaded
+on the arduino board. This allows to acquire data from the analog inputs on an Arduino board from python objects on
+the connected computer. See https://mryslab.github.io/telemetrix/
+
