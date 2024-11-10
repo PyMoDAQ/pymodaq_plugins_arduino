@@ -28,7 +28,7 @@ class DAQ_Move_Servo(DAQ_Move_base):
          
     """
     _axis_names = {'Servo': config('servo', 'pin')}
-    _controller_units = {'Servo': ''}
+    _controller_units = {'Servo': '°'}
     _epsilons = {'Servo': 1}
 
     data_actuator_type = DataActuatorType['DataActuator']
@@ -49,7 +49,8 @@ class DAQ_Move_Servo(DAQ_Move_base):
         float: The position obtained after scaling conversion.
         """
 
-        pos = DataActuator(data=self.controller.get_output_pin_value(self.axis_value))
+        pos = DataActuator(data=self.controller.get_output_pin_value(self.axis_value),
+                           units=self.axis_unit)
         pos = self.get_position_with_scaling(pos)
         return pos
 
@@ -116,7 +117,7 @@ class DAQ_Move_Servo(DAQ_Move_base):
         value = self.set_position_with_scaling(value)  # apply scaling if the user specified one
 
         self.controller.servo_move_degree(self.axis_value,
-                                          value.value())
+                                          value.units_as(self.axis_unit).value())
 
     def move_rel(self, value: DataActuator):
         """ Move the actuator to the relative target actuator value defined by value
@@ -131,7 +132,7 @@ class DAQ_Move_Servo(DAQ_Move_base):
 
         # value is set in percent
         self.controller.servo_move_degree(self.axis_value,
-                                          self.target_value.value())
+                                          self.target_value.units_as(self.axis_unit).value())
 
     def move_home(self):
         """Call the reference method of the controller"""
