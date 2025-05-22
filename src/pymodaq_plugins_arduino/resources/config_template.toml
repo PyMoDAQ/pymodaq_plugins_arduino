@@ -18,3 +18,10 @@ rows = 2
 
 [servo]
 pin = 3
+
+[stepper]
+name = 0
+[stepper.pins]
+ena_pin = 7
+pul_pin = 8
+dir_pin = 9

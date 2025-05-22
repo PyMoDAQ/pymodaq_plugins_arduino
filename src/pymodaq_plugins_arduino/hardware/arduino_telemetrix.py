@@ -1,6 +1,5 @@
 import numbers
-from threading import Lock
-
+from threading import Lock, Event
 from pyvisa import ResourceManager
 from telemetrix import telemetrix
 
@@ -27,7 +26,8 @@ class Arduino(telemetrix.Telemetrix):
                                         3: 0,
                                         4: 0,
                                         5: 0}  # Initialized dictionary for 6 analog channels
-
+        self.stepper_motor = None
+                
     @staticmethod
     def round_value(value):
         return max(0, min(255, int(value)))
@@ -96,17 +96,69 @@ class Arduino(telemetrix.Telemetrix):
         self.pin_values_output[pin] = value
         lock.release()
 
+    #Stepper Motor Methods
+    def initialize_stepper_motor(self, pulse_pin, direction_pin, enable_pin=7):
+        """ Initialize the stepper motor with the given pins """
+        self.stepper_motor = self.set_pin_mode_stepper(interface=1, pin1=pulse_pin, pin2=direction_pin)
+        self.enable = enable_pin
+        self.set_pin_mode_digital_output(self.enable) # Set the enable pin as digital output
+        self.digital_write(self.enable , 1) # Disable the motor driver to avoid electrical consumption
+        self.stepper_set_current_position(self.stepper_motor, 0) # Set the current position to 0
+
+    def move_stepper_to_position(self, position: float, max_speed=200, acceleration=400):
+        """ Move the stepper motor to the specified position """
+        if self.stepper_motor is None:
+            raise ValueError("Stepper motor not initialized. Call initialize_stepper_motor first.")
+        
+        # Set motor parameters
+        self.stepper_set_max_speed(self.stepper_motor, max_speed)
+        self.stepper_set_acceleration(self.stepper_motor, acceleration)
+        # Set the target position
+        self.stepper_move_to(self.stepper_motor, int(position))
+        completion_event = Event()
+        def completion_callback(data):
+            """ Callback function to signal that the stepper motor has completed its movement """
+            completion_event.set()
+        self.digital_write(self.enable, 0)
+        self.stepper_run(self.stepper_motor, completion_callback=completion_callback)
+        completion_event.wait()
+        self.digital_write(self.enable, 1)
+        return True
+
+    def get_stepper_position(self):
+        """ Retrieve the current position of the stepper motor """
+        position_event = Event()
+        def position_callback(data):
+            """ Callback function to retrieve the current position of the stepper motor """
+            self.position = data[2]
+            position_event.set()
+        
+        self.stepper_get_current_position(self.stepper_motor, 
+                                          current_position_callback=position_callback)
+        position_event.wait()
+        return self.position
 
 if __name__ == '__main__':
     import time
-    tele = Arduino('COM6')
+    tele = Arduino('COM10')
+    
+    # Test servo motor
     tele.set_pin_mode_servo(5, 100, 3000)
     time.sleep(.2)
-
     tele.servo_write(5, 90)
-
     time.sleep(1)
-
     tele.servo_write(5, 00)
+
+    # Test stepper motor
+    tele.initialize_stepper_motor(pulse_pin=8, direction_pin=9, enable_pin=7)
+    tele.get_stepper_position()
+    time.sleep(0.2)
+    tele.move_stepper_to_position(500) # Move to position 2000
+    time.sleep(0.2)
+    tele.get_stepper_position()
+    time.sleep(0.2)
+    tele.move_stepper_to_position(-500) # Move to position -2000
+    time.sleep(0.2)           
+    tele.get_stepper_position()
 
     tele.shutdown()
