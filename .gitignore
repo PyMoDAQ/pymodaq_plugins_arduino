@@ -113,3 +113,7 @@ venv.bak/
 
 *yacctab.py
 *lextab.py
+
+# VSCode Settings
+.vscode/launch.json
+.vscode/settings.json

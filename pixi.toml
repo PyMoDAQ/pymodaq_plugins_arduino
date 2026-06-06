@@ -1,0 +1,24 @@
+[workspace]
+name = "pymodaq-plugins-arduino"
+version = "0.0.1"
+description = "Dev environment for pymodaq-plugins-arduino"
+channels = ["conda-forge"]
+platforms = ["win-64"]
+
+[dependencies]
+python = "3.11.*"
+pytables = "*"
+pip = "*"
+git = "*"
+numpy = ">=1.26,<2.0.0"
+
+[pypi-dependencies]
+PyQt6 = "*"
+telemetrix = "*"
+telemetrix-esp32 = "*"
+pyvisa = "*"
+pyvisa-py = "*"
+
+[tasks]
+setup = { cmd = "python setup_dev.py", description = "Clone PyMoDAQ 5.0.x et installe tout en mode éditable" }
+test = { cmd = "pytest tests/" }
