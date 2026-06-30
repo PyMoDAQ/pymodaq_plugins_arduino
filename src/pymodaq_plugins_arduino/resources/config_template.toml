@@ -1,6 +1,15 @@
 title = "this is the configuration file of the plugin Arduino"
 
 com_port = "COM24"
+ip_address = "172.17.50.53"
+ip_port = 31336
+
+[esp32]
+ip_address = "172.17.50.53"
+
+[esp32.pins]
+heater_pin = 18
+fan_pin = 17
 
 [presets]
 preset_for_colorsynthesizer = "ArduinoLED"
@@ -20,3 +29,25 @@ rows = 2
 pin = 2
 pos_1 = 55
 pos_2 = 80
+
+[FanHeater]
+[FanHeater.pins]
+heater_pin = 9
+heater_fan_pin = 8
+
+[max31865]
+#Broches SPI pour le capteur MAX31865 / PT100
+#Valeurs par défaut : Nano ESP32 en mode GPIO Legacy
+sck_pin  = 48
+miso_pin = 47
+mosi_pin = 38
+cs_pin   = 21
+
+[ads1115]
+#Broches I2C et adresse pour le capteur GY-ADS1115 / ADS1015
+#Adresse I2C : 0x48 (ADDR→GND), 0x49 (ADDR→VDD), 0x4A (ADDR→SDA), 0x4B (ADDR→SCL)
+i2c_address = 0x48
+sda_pin = 11   # A4 sur Nano ESP32 (GPIO11, SDA par defaut)
+scl_pin = 12   # A5 sur Nano ESP32 (GPIO12, SCL par defaut)
+gain = "1"
+
