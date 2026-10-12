@@ -12,11 +12,13 @@ package-url = 'https://github.com/PyMoDAQ/pymodaq_plugins_arduino'
 name = "pymodaq_plugins_arduino"
 description = 'Set of instrument plugins implemented using an Arduino Board'
 dependencies = [
-    "pymodaq>=5.0.0",
+    "pymodaq>=5.3.2",
+    "pymodaq_utils>=5.3.1",
+    "pymodaq_gui>=5.3.0",
+    "pymodaq_data>=5.3.0",
     'telemetrix',
     'pyvisa',
     'pyvisa-py',
-
 ]
 
 authors = [
